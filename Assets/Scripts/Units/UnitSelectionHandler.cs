@@ -11,7 +11,7 @@ namespace Units
         
         private Camera _camera;
 
-        private List<Unit> _selectedUnits = new List<Unit>();
+        public List<Unit> SelectedUnits { get; } = new List<Unit>();
         
         private void Start()
         {
@@ -22,10 +22,10 @@ namespace Units
         {
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                foreach (var selectedUnit in _selectedUnits)
+                foreach (var selectedUnit in SelectedUnits)
                     selectedUnit.Deselect(); 
                 
-                _selectedUnits.Clear();
+                SelectedUnits.Clear();
             }
             else if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
@@ -41,9 +41,9 @@ namespace Units
             if (!hit.collider.TryGetComponent(out Unit unit)) return;
             if (!unit.hasAuthority) return;
             
-            _selectedUnits.Add(unit);
+            SelectedUnits.Add(unit);
 
-            foreach (var selectedUnit in _selectedUnits)
+            foreach (var selectedUnit in SelectedUnits)
                 selectedUnit.Select();
         }
     }
