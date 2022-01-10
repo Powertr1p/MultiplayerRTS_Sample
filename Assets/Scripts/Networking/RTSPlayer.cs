@@ -9,6 +9,8 @@ namespace Networking
     {
         [SerializeField] private List<Unit> _units = new List<Unit>();
 
+        public List<Unit> GetUnits => _units;
+
     #region Server
     
         public override void OnStartServer()
