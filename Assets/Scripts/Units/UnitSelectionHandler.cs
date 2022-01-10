@@ -47,10 +47,14 @@ namespace Units
 
         private void StartSelectionArea()
         {
-            foreach (var selectedUnit in SelectedUnits)
-                selectedUnit.Deselect(); 
+            if (!Keyboard.current.leftShiftKey.isPressed)
+            {
+                foreach (var selectedUnit in SelectedUnits)
+                    selectedUnit.Deselect(); 
                 
-            SelectedUnits.Clear();
+                SelectedUnits.Clear();
+            }
+            
             _unitSelectionArea.gameObject.SetActive(true);
             _startPosition = Mouse.current.position.ReadValue();
             UpdateSelectionArea();
@@ -91,6 +95,8 @@ namespace Units
 
             foreach (var unit in _player.GetUnits)
             {
+                if (SelectedUnits.Contains(unit)) continue;
+                
                 Vector3 screenPosition = _camera.WorldToScreenPoint(unit.transform.position);
 
                 if (screenPosition.x > min.x && screenPosition.x < max.x && screenPosition.y > min.y && screenPosition.y < max.y)
