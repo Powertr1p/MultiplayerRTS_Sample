@@ -1,4 +1,5 @@
 using System;
+using Combat;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +25,18 @@ namespace Units
 
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _layerMask)) return;
 
+            if (hit.collider.TryGetComponent(out Targetable target))
+            {
+                if (target.hasAuthority)
+                {
+                    TryMove(hit.point);
+                    return;
+                }
+
+                TryTarget(target);
+                return;
+            }
+            
             TryMove(hit.point);
         }
 
@@ -32,6 +45,14 @@ namespace Units
             foreach (var unit in _unitSelectionHandler.SelectedUnits)
             {
                 unit.GetUnitMovement.CmdMove(position);
+            }
+        }
+        
+        private void TryTarget(Targetable target)
+        {
+            foreach (var unit in _unitSelectionHandler.SelectedUnits)
+            {
+                unit.GetTargeter.CmdSetTarget(target.gameObject);
             }
         }
     }
