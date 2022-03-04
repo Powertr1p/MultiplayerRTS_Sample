@@ -5,7 +5,9 @@ namespace Combat
 {
     public class Targeter : NetworkBehaviour
     {
-        [SerializeField] private Targetable _target;
+        public Targetable Target => _target;
+
+        private Targetable _target;
 
     #region Server
         
@@ -24,11 +26,6 @@ namespace Combat
         }
         
     #endregion
-
-    #region Client
-
         
-
-    #endregion
     }
 }
