@@ -8,6 +8,7 @@ namespace Buildings
     {
         [SerializeField] private GameObject _unitPrefab;
         [SerializeField] private Transform _unitSpawnPoint;
+    
     #region Server
 
         [Command]

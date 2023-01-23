@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Combat
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private float _launchForce = 10f;
         [SerializeField] private float _destroyAfterSeconds = 5f;
+        [SerializeField] private int _damageToDeal = 20;
 
         private void Start()
         {
@@ -17,8 +19,19 @@ namespace Combat
 
         public override void OnStartServer()
         {
-            //Invoke(nameof(DestroySelf), _destroyAfterSeconds);
             StartCoroutine(DelayDestroy());
+        }
+
+        [ServerCallback]
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent<NetworkIdentity>(out NetworkIdentity networkIdentity))
+                if (networkIdentity.connectionToClient == connectionToClient) return;
+
+            if (other.TryGetComponent<Health>(out Health health))
+                health.DealDamage(_damageToDeal);
+            
+            DestroySelf();
         }
 
         [Server]
@@ -27,6 +40,7 @@ namespace Combat
             NetworkServer.Destroy(gameObject);
         }
 
+        [Server]
         private IEnumerator DelayDestroy()
         {
             yield return new WaitForSeconds(_destroyAfterSeconds);
